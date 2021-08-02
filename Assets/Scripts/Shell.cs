@@ -52,12 +52,18 @@ public class Shell : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
+    public bool _exploded;
+
+    /// <summary>
+    /// 
+    /// </summary>
     void Start()
     {
         _stateMachine = new IceMilkTea.Core.ImtStateMachine<Shell>(this);
         _stateMachine.AddAnyTransition<IdleState>((int)StateEventId.Idle);
         _stateMachine.AddAnyTransition<MoveState>((int)StateEventId.Move);
         _stateMachine.SetStartState<MoveState>();
+        _exploded = false;
     }
 
     /// <summary>
@@ -97,8 +103,8 @@ public class Shell : MonoBehaviour
     {
         protected internal override void Update()
         {
-            float g = 0.025f;
-            const float width = 4.8f, height = 3.7f;
+            const float g = 0.02f;
+            const float width = 8.8f, height = 7.0f;
 
             var position = Context.transform.position;
             Context._velocityY += g * Time.deltaTime;
@@ -114,7 +120,7 @@ public class Shell : MonoBehaviour
             {
                 //Context._velocityY = 0 - Context._velocityY;
 
-                const float maxVelocity = -0.028f;
+                const float maxVelocity = -0.03f;
                 Context._velocityY = maxVelocity;
                 if (Context._velocityY < maxVelocity) Context._velocityY = maxVelocity;
             }
@@ -128,7 +134,11 @@ public class Shell : MonoBehaviour
     /// </summary>
     public void Explode(int comboCount)
     {
-        GetComponent<ShellBulletEmitter>().Emit(transform.position, comboCount + 1);
-        GetComponent<ScoreManager>().Scored(comboCount, transform.position);
+        if (!_exploded)
+        {
+            GetComponent<ShellBulletEmitter>().Emit(transform.position, comboCount + 1);
+            GetComponent<ScoreManager>().Scored(comboCount, transform.position);
+            _exploded = true;
+        }
     }
 }

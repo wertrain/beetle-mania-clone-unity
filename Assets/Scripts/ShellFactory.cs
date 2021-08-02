@@ -35,8 +35,8 @@ public class ShellFactory : MonoBehaviour
         {
             if ((_spawnTime += Time.deltaTime) > 0.25f)
             {
-                var shell = Instantiate(_prefab, new Vector3(0.0f, 5.0f, 0.0f), Quaternion.identity);
-                shell.GetComponent<Shell>().VelocityX = 3.5f * (Random.Range(0.0f, 1.0f) > 0.5f ? -1.0f : 1.0f);
+                var shell = Instantiate(_prefab, new Vector3(0.0f, 10.0f, 0.0f), Quaternion.identity);
+                shell.GetComponent<Shell>().VelocityX = 5.0f * (Random.Range(0.0f, 1.0f) > 0.5f ? -1.0f : 1.0f);
                  _shells.Add(shell);
                 _spawnTime = 0;
             }

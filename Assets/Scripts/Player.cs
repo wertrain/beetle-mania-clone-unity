@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
         _stateMachine.AddAnyTransition<DamageState>((int)StateEventId.Damage);
         _stateMachine.SetStartState<IdleState>();
 
-        _speed = 4.5f;
+        _speed = 9.0f;
     }
 
     // Update is called once per frame
