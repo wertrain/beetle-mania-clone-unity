@@ -12,7 +12,7 @@ public class BeetleBullet : BulletBase
         _velocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
         _velocity = new Vector3(0f, 1f);
         _maxLifeTime = 3f;
-        _speed = 16f;
+        _speed = 160f;
     }
 
     /// <summary>

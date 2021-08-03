@@ -11,7 +11,7 @@ public class ShellBullet : BulletBase
     {
         _velocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
         _maxLifeTime = 0.2f;
-        _speed = 18f;
+        _speed = 180f;
     }
 
     /// <summary>

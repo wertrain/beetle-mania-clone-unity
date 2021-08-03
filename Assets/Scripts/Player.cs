@@ -20,6 +20,16 @@ public class Player : MonoBehaviour
     private float _stepTime;
 
     /// <summary>
+    /// 
+    /// </summary>
+    private float _damageTime;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private float _invincibleTime;
+
+    /// <summary>
     /// 画像インデックス
     /// </summary>
     private int _stepSpriteIndex;
@@ -47,7 +57,7 @@ public class Player : MonoBehaviour
         _stateMachine.AddAnyTransition<DamageState>((int)StateEventId.Damage);
         _stateMachine.SetStartState<IdleState>();
 
-        _speed = 9.0f;
+        _speed = 90f;
     }
 
     // Update is called once per frame
@@ -60,8 +70,22 @@ public class Player : MonoBehaviour
             _stepTime = 0;
         }
 
+        int baseIndex = 0;
+        if (_stateMachine.Running && _stateMachine.IsCurrentState<DamageState>())
+            baseIndex = 2;
+
         var sr = GetComponent<SpriteRenderer>();
-        sr.sprite = Sprites[_stepSpriteIndex];
+        sr.sprite = Sprites[baseIndex + _stepSpriteIndex];
+
+        if (_invincibleTime > 0)
+        {
+            sr.color = new Color(255, 255, 255, 128);
+            if ((_invincibleTime -= Time.deltaTime) < 0f)
+            {
+                sr.color = new Color(255, 255, 255, 255);
+                _invincibleTime = 0;
+            }
+        }
 
         _stateMachine.Update();
     }
@@ -86,6 +110,14 @@ public class Player : MonoBehaviour
             {
                 Context.GetComponent<BeetleBulletsController>().Shot(Context.transform.position);
             }
+
+            var position = Context.transform.position;
+
+            float width = 100f - 8f;
+            if (position.x < -width) position.x = -width;
+            else if (position.x > width) position.x = width;
+
+            Context.transform.position = position;
         }
     }
 
@@ -96,6 +128,28 @@ public class Player : MonoBehaviour
     {
         protected internal override void Update()
         {
+            if ((Context._damageTime += Time.deltaTime) > 3f)
+            {
+                Context._stateMachine.SendEvent((int)StateEventId.Idle);
+                Context._damageTime = 0;
+
+                Context._invincibleTime = 10.0f;
+            }
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (_invincibleTime > 0) return;
+
+        var shell = collision.gameObject.GetComponent<Shell>();
+        if (shell)
+        {
+            _stateMachine.SendEvent((int)StateEventId.Damage);
         }
+    }
+}

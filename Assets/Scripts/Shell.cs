@@ -103,8 +103,9 @@ public class Shell : MonoBehaviour
     {
         protected internal override void Update()
         {
-            const float g = 0.02f;
-            const float width = 8.8f, height = 7.0f;
+#if false
+            const float g = 0.2f;
+            const float width = 95f, height = 70f;
 
             var position = Context.transform.position;
             Context._velocityY += g * Time.deltaTime;
@@ -120,12 +121,13 @@ public class Shell : MonoBehaviour
             {
                 //Context._velocityY = 0 - Context._velocityY;
 
-                const float maxVelocity = -0.03f;
+                const float maxVelocity = -0.3f;
                 Context._velocityY = maxVelocity;
                 if (Context._velocityY < maxVelocity) Context._velocityY = maxVelocity;
             }
 
             Context.transform.position = position;
+#endif
         }
     }
 
@@ -141,4 +143,13 @@ public class Shell : MonoBehaviour
             _exploded = true;
         }
     }
-}
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log(collision);
+    }
+    }
