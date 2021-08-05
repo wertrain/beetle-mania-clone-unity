@@ -30,6 +30,16 @@ public class Player : MonoBehaviour
     private float _invincibleTime;
 
     /// <summary>
+    /// 
+    /// </summary>
+    private float _blinkTime;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private bool _isBlink;
+
+    /// <summary>
     /// 画像インデックス
     /// </summary>
     private int _stepSpriteIndex;
@@ -79,12 +89,20 @@ public class Player : MonoBehaviour
 
         if (_invincibleTime > 0)
         {
-            sr.color = new Color(255, 255, 255, 128);
+            if ((_blinkTime += Time.deltaTime) > 0.2f)
+            {
+                _isBlink = !_isBlink;
+                _blinkTime = 0;
+            }
+
+            var color = sr.color;
+            color.a = _isBlink ? 0.5f : 1f;
             if ((_invincibleTime -= Time.deltaTime) < 0f)
             {
-                sr.color = new Color(255, 255, 255, 255);
+                color.a = 1f;
                 _invincibleTime = 0;
             }
+            sr.color = color;
         }
 
         _stateMachine.Update();
@@ -128,12 +146,12 @@ public class Player : MonoBehaviour
     {
         protected internal override void Update()
         {
-            if ((Context._damageTime += Time.deltaTime) > 3f)
+            if ((Context._damageTime += Time.deltaTime) > 2f)
             {
                 Context._stateMachine.SendEvent((int)StateEventId.Idle);
                 Context._damageTime = 0;
 
-                Context._invincibleTime = 10.0f;
+                Context._invincibleTime = 2f;
             }
         }
     }
