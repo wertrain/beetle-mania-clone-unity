@@ -12,9 +12,15 @@ public class ScoreManager : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
+    private UIController _controller;
+
+    /// <summary>
+    /// 
+    /// </summary>
     void Start()
     {
         _prefab = (GameObject)Resources.Load("Prefabs/Score");
+        _controller = GameObject.Find("UIController").GetComponent<UIController>();
     }
 
     /// <summary>
@@ -26,5 +32,6 @@ public class ScoreManager : MonoBehaviour
     {
         var score = Instantiate(_prefab);
         score.GetComponent<Score>().Popup(index, position);
+        _controller.AddScore((ulong)Mathf.Pow(2, index + 1));
     }
 }

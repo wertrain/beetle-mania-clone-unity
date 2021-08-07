@@ -15,6 +15,11 @@ public class LifeController : MonoBehaviour
     private List<GameObject> _symbols;
 
     /// <summary>
+    /// Å‘åƒ‰ƒCƒt
+    /// </summary>
+    private static readonly int MaxLife = 5;
+
+    /// <summary>
     /// 
     /// </summary>
     void Start()
@@ -22,7 +27,7 @@ public class LifeController : MonoBehaviour
         _prefab = (GameObject)Resources.Load("Prefabs/Life");
         _symbols = new List<GameObject>();
 
-        for (int index = 0; index < 4; ++index)
+        for (int index = 0; index < MaxLife; ++index)
         {
             var symbol = Instantiate(_prefab, 
                 new Vector3(transform.position.x + (10 * index), transform.position.y, transform.position.z), 
