@@ -10,7 +10,7 @@ public class ShellBullet : BulletBase
     void Start()
     {
         _velocity = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
-        _maxLifeTime = 0.2f;
+        _maxLifeTime = 0.25f;
         _speed = 180f;
     }
 

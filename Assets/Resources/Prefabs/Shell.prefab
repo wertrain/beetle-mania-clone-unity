@@ -134,6 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 243166f9e4bb6d24e817a4af2fa51263, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EmitCount: 4
 --- !u!114 &3301902713465869506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,8 +161,8 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 1000
-  m_GravityScale: 15
+  m_AngularDrag: 1
+  m_GravityScale: 8
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1

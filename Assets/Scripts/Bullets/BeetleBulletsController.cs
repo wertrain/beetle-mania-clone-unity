@@ -15,6 +15,16 @@ public class BeetleBulletsController : MonoBehaviour
     private float _shotTime;
 
     /// <summary>
+    /// 発射タイマー
+    /// </summary>
+    private float _shotResetTime;
+
+    /// <summary>
+    /// ショット数
+    /// </summary>
+    private int _shotCount;
+
+    /// <summary>
     /// 
     /// </summary>
     private GameObject _prefab;
@@ -45,12 +55,22 @@ public class BeetleBulletsController : MonoBehaviour
                 _shotTime = 0f;
             }
         }
+
+        if ((_shotResetTime += Time.deltaTime) > 2f)
+        {
+            _shotResetTime = 0;
+            _shotCount = 0;
+        }
     }
 
     public void Shot(Vector3 start)
     {
+        if (_shotCount > 5) return;
+
         if (_shotTime <= 0f)
         {
+            ++_shotCount;
+
             Instantiate(_prefab, start, Quaternion.identity);
             _shotTime = ShotSpan;
         }

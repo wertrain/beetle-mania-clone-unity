@@ -10,7 +10,7 @@ public class Heart : ItemBase
     void Start()
     {
         _stepSpan = 0.12f;
-        _speed = 10f;
+        _speed = 50f;
         _maxLifeTime = 8f;
     }
 
@@ -25,5 +25,13 @@ public class Heart : ItemBase
         var position = transform.position;
         position += -Vector3.up * _speed * Time.deltaTime;
         transform.position = position;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public void Use()
+    {
+        Destroy(gameObject);
     }
 }

@@ -10,6 +10,11 @@ public class Player : MonoBehaviour
     public List<Sprite> Sprites = new List<Sprite>();
 
     /// <summary>
+    /// 
+    /// </summary>
+    public int MaxLife { get; private set; } = 10;
+
+    /// <summary>
     /// ステートマシン
     /// </summary>
     private IceMilkTea.Core.ImtStateMachine<Player> _stateMachine;
@@ -52,10 +57,16 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
+    private int _life;
+
+    /// <summary>
+    /// 
+    /// </summary>
     private enum StateEventId : int
     {
         Idle,
         Damage,
+        Knockout,
         Max
     }
 
@@ -65,8 +76,10 @@ public class Player : MonoBehaviour
         _stateMachine = new IceMilkTea.Core.ImtStateMachine<Player>(this);
         _stateMachine.AddAnyTransition<IdleState>((int)StateEventId.Idle);
         _stateMachine.AddAnyTransition<DamageState>((int)StateEventId.Damage);
+        _stateMachine.AddAnyTransition<KnockoutState>((int)StateEventId.Knockout);
         _stateMachine.SetStartState<IdleState>();
 
+        _life = MaxLife;
         _speed = 90f;
     }
 
@@ -140,19 +153,65 @@ public class Player : MonoBehaviour
     }
 
     /// <summary>
-    /// Move ステート
+    /// Damage ステート
     /// </summary>
     private class DamageState : IceMilkTea.Core.ImtStateMachine<Player>.State
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        private GameObject _knockoutCounter;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private int _slapCount;
+
+        protected internal override void Enter()
+        {
+            var prefab = (GameObject)Resources.Load("Prefabs/KnockoutCounter");
+            _knockoutCounter = Instantiate(prefab,
+                new Vector3(Context.transform.position.x, Context.transform.position.y + 16f, Context.transform.position.z),
+                Quaternion.identity);
+            _slapCount = 0;
+        }
+
         protected internal override void Update()
         {
-            if ((Context._damageTime += Time.deltaTime) > 2f)
+            if (_knockoutCounter)
             {
-                Context._stateMachine.SendEvent((int)StateEventId.Idle);
-                Context._damageTime = 0;
+                const int baseSlapCount = 10;
+                // ライフが減るごとに 5 カウントずつ増える
+                int maxSlapCount = baseSlapCount + (5 * (Context.MaxLife - Context._life));
 
-                Context._invincibleTime = 2f;
+                if (Input.GetKeyUp(KeyCode.Z))
+                {
+                    if (++_slapCount > maxSlapCount)
+                    {
+                        if (--Context._life < 0) Context._life = 0;
+                        Debug.Log(Context._life);
+                        Context._stateMachine.SendEvent((int)StateEventId.Idle);
+                        Context._invincibleTime = 2f;
+                        Destroy(_knockoutCounter);
+                    }
+                }
             }
+            else
+            {
+                Context.gameObject.GetComponent<ShellBulletEmitter>().Emit(Context.transform.position, 1);
+                Context._stateMachine.SendEvent((int)StateEventId.Knockout);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Knockout ステート
+    /// </summary>
+    private class KnockoutState : IceMilkTea.Core.ImtStateMachine<Player>.State
+    {
+        protected internal override void Enter()
+        {
+            Destroy(Context.gameObject);
         }
     }
 
@@ -162,6 +221,17 @@ public class Player : MonoBehaviour
     /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!_stateMachine.IsCurrentState<IdleState>()) return;
+
+        var heart = collision.gameObject.GetComponent<Heart>();
+        if (heart)
+        {
+            Debug.Log(heart);
+
+            heart.Use();
+            if (++_life > MaxLife) _life = MaxLife;
+        }
+
         if (_invincibleTime > 0) return;
 
         var shell = collision.gameObject.GetComponent<Shell>();

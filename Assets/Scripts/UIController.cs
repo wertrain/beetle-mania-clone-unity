@@ -13,7 +13,7 @@ public class UIController : MonoBehaviour
     /// <summary>
     /// 
     /// </summary>
-    public ulong HighScore { get; }
+    public static ulong HighScore { get; private set; } = 5000;
 
     /// <summary>
     /// 
@@ -58,5 +58,8 @@ public class UIController : MonoBehaviour
 
         if (Score > MaxScore)
             Score = MaxScore;
+
+        if (Score > HighScore)
+            HighScore = Score;
     }
 }
