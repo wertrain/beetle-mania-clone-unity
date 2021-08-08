@@ -63,6 +63,10 @@ public class BeetleBulletsController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="start"></param>
     public void Shot(Vector3 start)
     {
         if (_shotCount > 5) return;

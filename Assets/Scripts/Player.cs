@@ -137,12 +137,15 @@ public class Player : MonoBehaviour
                 Context.transform.Translate(Context._speed * Time.deltaTime, 0, 0);
             }
 
-            if (Input.GetKeyUp(KeyCode.Z))
+            var position = Context.transform.position;
+            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            position.x = mousePosition.x;
+            Context.transform.position = position;
+
+            if (Input.GetKeyUp(KeyCode.Z) || Input.GetMouseButtonDown(0))
             {
                 Context.GetComponent<BeetleBulletsController>().Shot(Context.transform.position);
             }
-
-            var position = Context.transform.position;
 
             float width = 100f - 8f;
             if (position.x < -width) position.x = -width;
@@ -184,7 +187,7 @@ public class Player : MonoBehaviour
                 // ライフが減るごとに 5 カウントずつ増える
                 int maxSlapCount = baseSlapCount + (5 * (Context.MaxLife - Context._life));
 
-                if (Input.GetKeyUp(KeyCode.Z))
+                if (Input.GetKeyUp(KeyCode.Z) || Input.GetMouseButtonDown(0))
                 {
                     if (++_slapCount > maxSlapCount)
                     {

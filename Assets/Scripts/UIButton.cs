@@ -14,7 +14,7 @@ public class UIButton : MonoBehaviour
                 break;
 
             case "EndButton":
-                Destroy(GameObject.Find("GameOverMenu"));
+                Destroy(GameObject.Find("GameOverMenu(Clone)"));
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #elif UNITY_STANDALONE
